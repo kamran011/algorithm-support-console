@@ -7,12 +7,15 @@ if (!process.env.DATABASE_URL) {
 }
 
 // Supabase transaction pooler (port 6543) does not support prepared
-// statements, and each serverless invocation opens its own connections, so
-// keep the pool at 1 to stay under the pooler's connection limits during
-// concurrent traffic.
+// statements. Keep the pool small: each serverless instance opens its own
+// connections and the pooler has client limits. But NOT 1 — with a single
+// connection, a reserved transaction plus queued concurrent queries can
+// starve the pool and wedge every request; 4 gives concurrent
+// approve/execute transactions their own connections while staying well
+// under pooler limits.
 const client = postgres(process.env.DATABASE_URL, {
   prepare: false,
-  max: 1,
+  max: 4,
 });
 
 export const db = drizzle(client, { schema });
