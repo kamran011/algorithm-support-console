@@ -161,7 +161,7 @@ function NewRequestForm() {
           value={customerId}
           onChange={(e) => setCustomerId(e.target.value)}
           required
-          className="rounded border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400"
+          className="min-w-[180px] rounded border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400"
         >
           <option value="">Select customer…</option>
           {customers.data?.customers.map((c) => (
