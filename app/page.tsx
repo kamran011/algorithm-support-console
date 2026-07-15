@@ -166,7 +166,7 @@ function NewRequestForm() {
           <option value="">Select customer…</option>
           {customers.data?.customers.map((c) => (
             <option key={c.id} value={c.id}>
-              #{c.id} {c.name}
+              {c.name}
             </option>
           ))}
         </select>
