@@ -34,23 +34,36 @@ npm run seed                   # deterministic test data (resets all tables)
 npm run dev                    # http://localhost:3000
 ```
 
-Seeded scenarios (all amounts in cents in the DB):
+## Test Data
 
-| Order | State | Expected behavior |
-|-------|-------|-------------------|
-| 1001 | paid, not shipped | cancellable (escalates — cancels always do) |
-| 1002 | shipped | cancel refused by guardrail |
-| 1003 | delivered, $45.00 | refund escalates (> $10 cap) |
-| 1004 | delivered, $8.00 | refund auto-executes |
-| 1005 | fully refunded | further refunds refused |
-| 1006 | $20 of $50 refunded | refund > $30 remainder refused |
+Run `npm run seed` to reset the database to this state.
 
-Try it: pick a customer on the home page and submit e.g.
-*"My order 1004 arrived damaged, I want my $8 back"* (auto-executes) or
-*"Refund my $45 for order 1003"* (escalates for review). Note the order must
-belong to the selected customer (1001→Alice, 1002→Bob, 1003→Carol,
-1004→David, 1005→Emma, 1006→Alice); requests about someone else's order are
-refused by the ownership guardrail — also worth trying.
+### Customers
+| ID | Name | Email |
+|----|------|-------|
+| 1 | Alice Nguyen | alice@example.com |
+| 2 | Bob Martinez | bob@example.com |
+| 3 | Carol Okafor | carol@example.com |
+| 4 | David Kim | david@example.com |
+| 5 | Emma Rossi | emma@example.com |
+
+### Orders
+| Order ID | Customer | Status | Total | Scenario |
+|----------|----------|--------|-------|----------|
+| 1001 | Alice | paid | $30.00 | Cancellable (not yet shipped) |
+| 1002 | Bob | shipped | $75.50 | Cancel must be refused — already shipped |
+| 1003 | Carol | delivered | $45.00 | Large refund — escalates to human review |
+| 1004 | David | delivered | $8.00 | Small refund — auto-executes |
+| 1005 | Emma | refunded | $25.00 | Already refunded — must be refused |
+| 1006 | Alice | delivered | $50.00 | Partially refunded $20 — over-refund must be refused |
+
+### Suggested test scenarios
+- Submit "I want a refund for order 1004" as David Kim → expect auto-executed green badge
+- Submit "I want a refund for order 1003" as Carol Okafor → expect escalated, approve it
+- Submit "Cancel my order 1002" as Bob Martinez → expect escalated with shipped-order risk reason
+- Submit "I want a refund for order 9999" as anyone → expect no action, hallucinated order handled cleanly
+- Submit "I want a refund for order 1005" as Emma Rossi → expect refused, already refunded
+- Open same escalation in two browser tabs, click Approve in both → expect one success, one "Already decided by" banner
 
 ## How to verify concurrency
 
