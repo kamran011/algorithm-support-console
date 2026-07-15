@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import { Badge, decisionBadge } from "@/components/Badge";
 import { JsonBlock } from "@/components/JsonBlock";
 import { formatCents, formatTimestamp } from "@/lib/format";
@@ -162,9 +163,13 @@ export default function RequestDetailPage() {
           {run?.status === "failed" && <Badge color="red">run failed</Badge>}
         </h2>
         {run ? (
-          <p className="text-sm whitespace-pre-wrap">
-            {run.reasoningSummary || "(no summary produced)"}
-          </p>
+          run.reasoningSummary ? (
+            <div className="text-sm [&>p]:mb-2 [&>ul]:mb-2 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:mb-2 [&>ol]:list-decimal [&>ol]:pl-4 [&>h1]:font-semibold [&>h2]:font-semibold [&>h3]:font-semibold">
+              <ReactMarkdown>{run.reasoningSummary}</ReactMarkdown>
+            </div>
+          ) : (
+            <p className="text-sm text-slate-400">(no summary produced)</p>
+          )
         ) : (
           <p className="text-sm text-slate-400">No agent run recorded.</p>
         )}
