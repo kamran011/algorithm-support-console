@@ -155,7 +155,7 @@ function NewRequestForm() {
           e.preventDefault();
           if (customerId && message.trim()) submit.mutate();
         }}
-        className="flex flex-col gap-3 sm:flex-row sm:items-start"
+        className="flex flex-col gap-3 sm:flex-row sm:items-end"
       >
         <select
           value={customerId}
