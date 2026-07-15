@@ -150,8 +150,7 @@ export default function RequestDetailPage() {
           </span>
         </div>
         <p className="text-sm text-slate-500">
-          {request.customerName} ({request.customerEmail}) — customer{" "}
-          <span className="font-mono">#{request.customerId}</span>
+          {request.customerName} ({request.customerEmail})
         </p>
         <p className="mt-3 rounded bg-slate-50 p-3 text-sm">{request.message}</p>
       </section>
