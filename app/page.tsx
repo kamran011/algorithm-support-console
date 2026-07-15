@@ -155,13 +155,13 @@ function NewRequestForm() {
           e.preventDefault();
           if (customerId && message.trim()) submit.mutate();
         }}
-        className="flex flex-col gap-3 sm:flex-row sm:items-end"
+        className="flex flex-col gap-3 sm:flex-row sm:items-center"
       >
         <select
           value={customerId}
           onChange={(e) => setCustomerId(e.target.value)}
           required
-          className="rounded border border-slate-300 bg-white px-2 py-2 text-sm"
+          className="rounded border border-slate-300 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400"
         >
           <option value="">Select customer…</option>
           {customers.data?.customers.map((c) => (
@@ -176,7 +176,7 @@ function NewRequestForm() {
           required
           rows={2}
           placeholder='e.g. "Order 1004 arrived damaged, I want a refund"'
-          className="flex-1 rounded border border-slate-300 px-2 py-2 text-sm"
+          className="flex-1 rounded border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 focus:border-slate-400 resize-none"
         />
         <button
           type="submit"
