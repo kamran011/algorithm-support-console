@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { desc, eq, inArray } from "drizzle-orm";
+import { desc, eq, inArray, ne } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import {
@@ -87,6 +87,7 @@ export async function GET() {
     })
     .from(supportRequests)
     .innerJoin(customers, eq(supportRequests.customerId, customers.id))
+    .where(ne(customers.name, "Concurrency Test"))
     .orderBy(desc(supportRequests.createdAt))
     .limit(100);
 

@@ -262,6 +262,33 @@ async function main() {
     );
   }
 
+  // ---- cleanup this run's fixtures ------------------------------------------
+  {
+    const runOrders = await db
+      .select({ id: orders.id })
+      .from(orders)
+      .where(eq(orders.customerId, customer.id));
+    const runOrderIds = runOrders.map((o) => o.id);
+    if (runOrderIds.length > 0) {
+      await db.delete(refunds).where(inArray(refunds.orderId, runOrderIds));
+    }
+    const runRequests = await db
+      .select({ id: supportRequests.id })
+      .from(supportRequests)
+      .where(eq(supportRequests.customerId, customer.id));
+    const runReqIds = runRequests.map((r) => r.id);
+    if (runReqIds.length > 0) {
+      await db.delete(actions).where(inArray(actions.requestId, runReqIds));
+      await db.delete(agentRuns).where(inArray(agentRuns.requestId, runReqIds));
+      await db.delete(supportRequests).where(inArray(supportRequests.id, runReqIds));
+    }
+    if (runOrderIds.length > 0) {
+      await db.delete(orders).where(inArray(orders.id, runOrderIds));
+    }
+    await db.delete(customers).where(eq(customers.id, customer.id));
+    console.log("\nTest fixtures cleaned up.");
+  }
+
   // Sanity: the whole database still satisfies the refund invariant.
   const bad = await db.execute<{ id: number }>(
     sql`SELECT id FROM orders WHERE amount_refunded_cents > total_amount_cents`
